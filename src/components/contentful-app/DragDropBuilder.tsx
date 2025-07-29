@@ -149,7 +149,13 @@ export default function DragDropBuilder() {
           </div>
           
           <div className={styles.canvas}>
-            <Droppable droppableId="builder">
+<Droppable
+  droppableId="builder"
+  isDropDisabled={true}
+  isCombineEnabled={false} // ✅ Add this line
+    ignoreContainerClipping={false}
+
+>
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}

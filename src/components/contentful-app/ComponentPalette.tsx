@@ -30,7 +30,12 @@ export default function ComponentPalette() {
       <h3 className={styles.title}>Components</h3>
       <p className={styles.subtitle}>Drag components to the canvas</p>
       
-      <Droppable droppableId="palette" isDropDisabled={true}>
+<Droppable
+  droppableId="palette"
+  isDropDisabled={true}
+  isCombineEnabled={false}
+  ignoreContainerClipping={false}
+>
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps} className={styles.componentList}>
             {components.map((component, index) => (

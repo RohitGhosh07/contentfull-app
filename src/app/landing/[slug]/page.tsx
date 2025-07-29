@@ -63,139 +63,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function LandingPage({ params }: Props) {
-  // For demo purposes, we'll create mock data since we don't have actual Contentful setup
-  const mockPageData = {
-    'page-1': {
-      sys: { id: '1' },
-      title: 'Landing Page 1',
-      slug: 'page-1',
-      layoutConfig: {
-        components: [
-          {
-            id: 'hero-1',
-            type: 'hero' as const,
-            data: {
-              heading: 'Welcome to Our Amazing Product',
-              subtitle: 'Transform your business with our cutting-edge solution that delivers results you can measure.',
-              ctaText: 'Get Started Today',
-              ctaUrl: '#contact',
-              backgroundImage: {
-                sys: { id: 'hero-bg-1' },
-                url: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&h=1080',
-                title: 'Hero Background',
-                width: 1920,
-                height: 1080,
-              },
-            },
-          },
-          {
-            id: 'two-col-1',
-            type: 'twoColumn' as const,
-            data: {
-              heading: 'Why Choose Our Solution',
-              subtitle: 'We provide enterprise-grade tools with the simplicity your team needs to succeed. Our platform scales with your business and delivers measurable results.',
-              ctaText: 'Learn More',
-              ctaUrl: '#features',
-              image: {
-                sys: { id: 'feature-img-1' },
-                url: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400',
-                title: 'Feature Image',
-                width: 600,
-                height: 400,
-              },
-            },
-          },
-          {
-            id: 'grid-1',
-            type: 'imageGrid' as const,
-            data: {
-              images: [
-                {
-                  sys: { id: 'grid-1-1' },
-                  url: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300',
-                  title: 'Gallery Image 1',
-                  width: 400,
-                  height: 300,
-                },
-                {
-                  sys: { id: 'grid-1-2' },
-                  url: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300',
-                  title: 'Gallery Image 2',
-                  width: 400,
-                  height: 300,
-                },
-                {
-                  sys: { id: 'grid-1-3' },
-                  url: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300',
-                  title: 'Gallery Image 3',
-                  width: 400,
-                  height: 300,
-                },
-                {
-                  sys: { id: 'grid-1-4' },
-                  url: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300',
-                  title: 'Gallery Image 4',
-                  width: 400,
-                  height: 300,
-                },
-              ],
-            },
-          },
-        ],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-    'page-2': {
-      sys: { id: '2' },
-      title: 'Landing Page 2',
-      slug: 'page-2',
-      layoutConfig: {
-        components: [
-          {
-            id: 'two-col-2',
-            type: 'twoColumn' as const,
-            data: {
-              heading: 'Start Your Journey Today',
-              subtitle: 'Join thousands of satisfied customers who have transformed their business with our innovative platform.',
-              ctaText: 'Start Free Trial',
-              ctaUrl: '#signup',
-              image: {
-                sys: { id: 'feature-img-2' },
-                url: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&h=400',
-                title: 'Start Journey Image',
-                width: 600,
-                height: 400,
-              },
-            },
-          },
-          {
-            id: 'hero-2',
-            type: 'hero' as const,
-            data: {
-              heading: 'Experience the Difference',
-              subtitle: 'Our platform delivers exceptional performance and reliability that your business can depend on.',
-              ctaText: 'Discover More',
-              ctaUrl: '#discover',
-              backgroundImage: {
-                sys: { id: 'hero-bg-2' },
-                url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920&h=1080',
-                title: 'Experience Background',
-                width: 1920,
-                height: 1080,
-              },
-            },
-          },
-        ],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-  };
 
-  const page = mockPageData[params.slug as keyof typeof mockPageData];
-  
+  const page = await getLandingPage(params.slug);
   if (!page) {
     notFound();
+  }
+
+  // If your layout config is stored as layoutConfiguration (Contentful field), parse it if it's a string
+  let layoutConfig = page.layoutConfig || page.layoutConfiguration;
+  if (typeof layoutConfig === 'string') {
+    try {
+      layoutConfig = JSON.parse(layoutConfig);
+    } catch {
+      layoutConfig = { components: [] };
+    }
   }
 
   const renderComponent = (component: ComponentBlock) => {
