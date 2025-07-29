@@ -23,4 +23,3 @@ export default function ContentfulAppPage() {
     </Provider>
   );
 }
-</thinking>

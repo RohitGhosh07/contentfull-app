@@ -58,4 +58,3 @@ export const {
 } = layoutSlice.actions;
 
 export default layoutSlice.reducer;
-</thinking>

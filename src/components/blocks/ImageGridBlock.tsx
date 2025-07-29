@@ -33,4 +33,3 @@ export default function ImageGridBlock({ block }: Props) {
     </section>
   );
 }
-</thinking>

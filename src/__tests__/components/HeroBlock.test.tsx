@@ -43,4 +43,3 @@ describe('HeroBlock', () => {
     expect(image).toBeInTheDocument()
   })
 })
-</thinking>

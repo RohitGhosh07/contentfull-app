@@ -21,4 +21,3 @@ export interface HistoryState {
 export interface RootState {
   layout: HistoryState;
 }
-</thinking>

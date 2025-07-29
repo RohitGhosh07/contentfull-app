@@ -257,4 +257,3 @@ export default async function LandingPage({ params }: Props) {
     </>
   );
 }
-</thinking>

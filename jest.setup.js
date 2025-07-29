@@ -40,4 +40,3 @@ jest.mock('react-beautiful-dnd', () => ({
     innerRef: jest.fn(),
   }, {}),
 }))
-</thinking>

@@ -38,4 +38,3 @@ export default function TwoColumnBlock({ block }: Props) {
     </section>
   );
 }
-</thinking>

@@ -72,4 +72,3 @@ export default function ComponentPreview({ component }: Props) {
     </div>
   );
 }
-</thinking>

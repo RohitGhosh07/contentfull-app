@@ -63,4 +63,3 @@ export interface LandingPage {
 export interface ContentfulResponse<T> {
   data: T;
 }
-</thinking>

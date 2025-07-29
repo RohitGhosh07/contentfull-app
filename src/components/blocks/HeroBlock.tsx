@@ -40,4 +40,3 @@ export default function HeroBlock({ block }: Props) {
     </section>
   );
 }
-</thinking>

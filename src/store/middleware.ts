@@ -51,4 +51,3 @@ async function saveToContentful(layoutData: any) {
     setTimeout(resolve, 500);
   });
 }
-</thinking>

@@ -51,4 +51,3 @@ const historySlice = createSlice({
 
 export const { pushToHistory, undo, redo, clearHistory } = historySlice.actions;
 export default historySlice.reducer;
-</thinking>

@@ -57,4 +57,3 @@ describe('layoutSlice', () => {
     expect(state.isDirty).toBe(true)
   })
 })
-</thinking>
