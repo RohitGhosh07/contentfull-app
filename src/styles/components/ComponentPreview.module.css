@@ -1,0 +1,170 @@
+.preview {
+  padding: 1rem;
+}
+
+.previewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.componentType {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.previewContent {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: white;
+}
+
+/* Hero Preview */
+.heroPreview {
+  position: relative;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heroImage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.heroImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+}
+
+.heroContent h3 {
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.heroContent p {
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+}
+
+/* Two Column Preview */
+.twoColumnPreview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  min-height: 150px;
+}
+
+.twoColumnContent {
+  flex: 1;
+}
+
+.twoColumnContent h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #1e293b;
+}
+
+.twoColumnContent p {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.twoColumnImage {
+  flex-shrink: 0;
+  width: 80px;
+  height: 60px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.twoColumnImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Image Grid Preview */
+.imageGridPreview {
+  padding: 1rem;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.gridItem {
+  aspect-ratio: 4/3;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.gridItem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* CTA Button */
+.ctaButton {
+  padding: 0.5rem 1rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ctaButton:hover {
+  background: #2563eb;
+}
+
+/* Unknown component */
+.unknownPreview {
+  padding: 2rem;
+  text-align: center;
+  color: #64748b;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .twoColumnPreview {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .twoColumnImage {
+    width: 120px;
+    height: 80px;
+  }
+}
+</thinking>
