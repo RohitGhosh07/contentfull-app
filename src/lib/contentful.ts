@@ -59,18 +59,23 @@ const ALL_LANDING_PAGES_QUERY = `
 
 export async function getLandingPage(slug: string): Promise<LandingPage | null> {
   try {
-    const response = await client.request<ContentfulResponse<any>>( // temporarily use any for debugging
-      LANDING_PAGE_QUERY,
-      { slug }
-    );
+    const response = await client.request<any>(LANDING_PAGE_QUERY, { slug });
     // Debug log the response structure
     console.log('Contentful landing page response:', JSON.stringify(response, null, 2));
-    if (!response || !response.data || !response.data.landingPageCollection || !response.data.landingPageCollection.items) {
+    if (!response || !response.landingPageCollection || !response.landingPageCollection.items) {
       console.error('landingPageCollection or items missing in response:', response);
       return null;
     }
-    return response.data.landingPageCollection.items[0] || null;
-  } catch (error) {
+    return response.landingPageCollection.items[0] || null;
+  } catch (error: any) {
+    // Handle Contentful UNRESOLVABLE_LINK error gracefully
+    const isUnresolvableLink = error?.response?.errors?.some((e: any) =>
+      e.extensions?.contentful?.code === 'UNRESOLVABLE_LINK'
+    );
+    if (isUnresolvableLink && error.response?.landingPageCollection?.items) {
+      console.warn('Contentful UNRESOLVABLE_LINK: returning partial data with seoImage as null');
+      return error.response.landingPageCollection.items[0] || null;
+    }
     console.error('Error fetching landing page:', error);
     return null;
   }

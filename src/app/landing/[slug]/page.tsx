@@ -16,7 +16,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
-  const { slug } = params;
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
   const page = await getLandingPage(slug);
 
   if (!page) {
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     openGraph: {
       title: page.seoTitle || page.title,
       description: page.seoDescription || `Landing page: ${page.title}`,
-      url: `${siteUrl}/landing/${params.slug}`,
+      url: `${siteUrl}/landing/${slug}`,
       siteName: 'Page Builder',
       images: page.seoImage
         ? [
@@ -55,13 +56,15 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       images: page.seoImage ? [page.seoImage.url] : [],
     },
     alternates: {
-      canonical: `${siteUrl}/landing/${params.slug}`,
+      canonical: `${siteUrl}/landing/${slug}`,
     },
   };
 }
 
+
 export default async function Page({ params }: any) {
-  const { slug } = params;
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
   const page = await getLandingPage(slug);
   if (!page) {
     notFound();
@@ -82,6 +85,7 @@ export default async function Page({ params }: any) {
   }
 
   const renderComponent = (component: ComponentBlock) => {
+    if (!component.data) return null;
     switch (component.type) {
       case 'hero':
         return <HeroBlock key={component.id} block={component} />;
@@ -94,12 +98,13 @@ export default async function Page({ params }: any) {
     }
   };
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: page.title,
     description: `Landing page: ${page.title}`,
-    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com'}/landing/${params.slug}`,
+    url: `${siteUrl}/landing/${slug}`,
     breadcrumb: {
       '@type': 'BreadcrumbList',
       itemListElement: [
@@ -107,19 +112,19 @@ export default async function Page({ params }: any) {
           '@type': 'ListItem',
           position: 1,
           name: 'Home',
-          item: process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com',
+          item: siteUrl,
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: 'Landing Pages',
-          item: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com'}/landing`,
+          item: `${siteUrl}/landing`,
         },
         {
           '@type': 'ListItem',
           position: 3,
           name: page.title,
-          item: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com'}/landing/${params.slug}`,
+          item: `${siteUrl}/landing/${slug}`,
         },
       ],
     },
