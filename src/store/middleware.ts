@@ -6,9 +6,16 @@ let autoSaveTimeout: NodeJS.Timeout | null = null;
 
 export const autoSaveMiddleware: Middleware<{}, RootState> = (store) => (next) => (action) => {
   const result = next(action);
-  
   // Only auto-save for layout actions that make changes
-  if (action.type.startsWith('layout/') && action.type !== 'layout/setAutoSaving' && action.type !== 'layout/markSaved') {
+  if (
+    typeof action === 'object' &&
+    action !== null &&
+    'type' in action &&
+    typeof action.type === 'string' &&
+    action.type.startsWith('layout/') &&
+    action.type !== 'layout/setAutoSaving' &&
+    action.type !== 'layout/markSaved'
+  ) {
     const state = store.getState();
     
     if (state.layout.present.isDirty) {

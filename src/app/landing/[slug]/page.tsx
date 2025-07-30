@@ -7,11 +7,6 @@ import HeroBlock from '@/components/blocks/HeroBlock';
 import TwoColumnBlock from '@/components/blocks/TwoColumnBlock';
 import ImageGridBlock from '@/components/blocks/ImageGridBlock';
 
-interface Props {
-  params: {
-    slug: string;
-  };
-}
 
 export async function generateStaticParams() {
   return [
@@ -20,8 +15,8 @@ export async function generateStaticParams() {
   ];
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata({ params }: any): Promise<Metadata> {
+  const { slug } = params;
   const page = await getLandingPage(slug);
 
   if (!page) {
@@ -65,8 +60,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Page({ params }: Props) {
-  const { slug } = await params;
+export default async function Page({ params }: any) {
+  const { slug } = params;
   const page = await getLandingPage(slug);
   if (!page) {
     notFound();

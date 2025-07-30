@@ -48,9 +48,8 @@ export default function DragDropBuilder() {
     }
   };
 
-  const createDefaultComponent = (type: string, position: number) => {
+  const createDefaultComponent = (type: 'hero' | 'twoColumn' | 'imageGrid', position: number) => {
     const id = `${type}-${Date.now()}`;
-    
     const defaultData = {
       hero: {
         heading: 'Hero Heading',
@@ -75,11 +74,10 @@ export default function DragDropBuilder() {
         ],
       },
     };
-    
     return {
       id,
       type,
-      data: defaultData[type as keyof typeof defaultData],
+      data: defaultData[type],
       position,
     };
   };
