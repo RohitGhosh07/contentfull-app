@@ -70,9 +70,29 @@ export default async function Page({ params }: any) {
     notFound();
   }
 
-  let layoutConfig = page.layoutConfig || page.layoutConfiguration;
-  // If layoutConfig is an object with a components array, use as is
-  if (layoutConfig && typeof layoutConfig === 'object' && Array.isArray(layoutConfig.components)) {
+  let layoutConfigRaw = page.layoutConfig || page.layoutConfiguration;
+  let layoutConfig: { components: any[]; lastUpdated: string };
+  // Ensure layoutConfig is always defined and has the expected shape
+  if (!layoutConfigRaw) {
+    layoutConfig = { components: [], lastUpdated: new Date().toISOString() };
+  } else if (typeof layoutConfigRaw === 'object' && Array.isArray((layoutConfigRaw as any).components)) {
+    layoutConfig = layoutConfigRaw as { components: any[]; lastUpdated: string };
+  } else if (typeof layoutConfigRaw === 'string') {
+    try {
+      layoutConfig = JSON.parse(layoutConfigRaw);
+    } catch {
+      layoutConfig = { components: [], lastUpdated: new Date().toISOString() };
+    }
+  } else {
+    layoutConfig = { components: [], lastUpdated: new Date().toISOString() };
+  }
+  if (!layoutConfig.lastUpdated) {
+    layoutConfig.lastUpdated = new Date().toISOString();
+  }
+  // Ensure layoutConfig is always defined and has the expected shape
+  if (!layoutConfig) {
+    layoutConfig = { components: [], lastUpdated: new Date().toISOString() };
+  } else if (typeof layoutConfig === 'object' && Array.isArray((layoutConfig as any).components)) {
     // do nothing
   } else if (typeof layoutConfig === 'string') {
     try {
