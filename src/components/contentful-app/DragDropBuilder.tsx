@@ -158,13 +158,13 @@ export default function DragDropBuilder() {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                   className={`${styles.dropZone} ${snapshot.isDraggingOver ? styles.dragOver : ''}`}
+                  style={{ minHeight: 120 }}
                 >
                   {layoutState.components.length === 0 && (
                     <div className={styles.emptyState}>
                       <p>Drag components from the sidebar to start building your page</p>
                     </div>
                   )}
-                  
                   {layoutState.components.map((component, index) => (
                     <Draggable key={component.id} draggableId={component.id} index={index}>
                       {(provided, snapshot) => (
