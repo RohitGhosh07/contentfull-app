@@ -20,31 +20,38 @@ export default function DragDropBuilder() {
   }, []);
 
   const handleDragEnd = (result: DropResult) => {
+    console.log('Drag End Result:', result);
     if (!result.destination) return;
-    
+
     const { source, destination, draggableId } = result;
-    
+
     // Save current state to history before making changes
     dispatch(pushToHistory(layoutState));
-    
+
     if (source.droppableId === 'palette' && destination.droppableId === 'builder') {
       // Adding new component from palette
       const componentType = draggableId as 'hero' | 'twoColumn' | 'imageGrid';
       const newComponent = createDefaultComponent(componentType, destination.index);
       dispatch(addComponent(newComponent));
+      setTimeout(() => {
+        console.log('After addComponent:', layoutState.components);
+      }, 0);
     } else if (source.droppableId === 'builder' && destination.droppableId === 'builder') {
       // Reordering existing components
       const items = Array.from(layoutState.components);
       const [reorderedItem] = items.splice(source.index, 1);
       items.splice(destination.index, 0, reorderedItem);
-      
+
       // Update positions
       const updatedItems = items.map((item, index) => ({
         ...item,
         position: index,
       }));
-      
+
       dispatch(reorderComponents(updatedItems));
+      setTimeout(() => {
+        console.log('After reorderComponents:', layoutState.components);
+      }, 0);
     }
   };
 
@@ -171,10 +178,11 @@ export default function DragDropBuilder() {
                         <div
                           ref={provided.innerRef}
                           {...provided.draggableProps}
+                          {...provided.dragHandleProps}
                           className={`${styles.componentWrapper} ${snapshot.isDragging ? styles.dragging : ''}`}
                         >
                           <div className={styles.componentControls}>
-                            <div {...provided.dragHandleProps} className={styles.dragHandle}>
+                            <div className={styles.dragHandle}>
                               ⋮⋮
                             </div>
                             <button
