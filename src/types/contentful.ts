@@ -54,7 +54,8 @@ export interface LandingPage {
   };
   title: string;
   slug: string;
-  layoutConfig: LayoutConfig;
+  layoutConfig?: LayoutConfig;
+  layoutConfiguration?: LayoutConfig;
   seoTitle?: string;
   seoDescription?: string;
   seoImage?: ContentfulAsset;

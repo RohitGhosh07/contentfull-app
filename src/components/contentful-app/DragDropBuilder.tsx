@@ -151,10 +151,9 @@ export default function DragDropBuilder() {
           <div className={styles.canvas}>
 <Droppable
   droppableId="builder"
-  isDropDisabled={true}
-  isCombineEnabled={false} // ✅ Add this line
-    ignoreContainerClipping={false}
-
+  isDropDisabled={false}
+  isCombineEnabled={false}
+  ignoreContainerClipping={false}
 >
               {(provided, snapshot) => (
                 <div

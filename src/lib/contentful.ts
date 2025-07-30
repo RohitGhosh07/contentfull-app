@@ -59,11 +59,16 @@ const ALL_LANDING_PAGES_QUERY = `
 
 export async function getLandingPage(slug: string): Promise<LandingPage | null> {
   try {
-    const response = await client.request<ContentfulResponse<{ landingPageCollection: { items: LandingPage[] } }>>(
+    const response = await client.request<ContentfulResponse<any>>( // temporarily use any for debugging
       LANDING_PAGE_QUERY,
       { slug }
     );
-    
+    // Debug log the response structure
+    console.log('Contentful landing page response:', JSON.stringify(response, null, 2));
+    if (!response || !response.data || !response.data.landingPageCollection || !response.data.landingPageCollection.items) {
+      console.error('landingPageCollection or items missing in response:', response);
+      return null;
+    }
     return response.data.landingPageCollection.items[0] || null;
   } catch (error) {
     console.error('Error fetching landing page:', error);

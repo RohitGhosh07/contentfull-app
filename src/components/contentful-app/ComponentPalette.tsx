@@ -32,7 +32,7 @@ export default function ComponentPalette() {
       
 <Droppable
   droppableId="palette"
-  isDropDisabled={true}
+  isDropDisabled={false}
   isCombineEnabled={false}
   ignoreContainerClipping={false}
 >

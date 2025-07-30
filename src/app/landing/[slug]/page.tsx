@@ -14,7 +14,6 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  // For this demo, we'll return static params
   return [
     { slug: 'page-1' },
     { slug: 'page-2' },
@@ -22,8 +21,9 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const page = await getLandingPage(params.slug);
-  
+  const { slug } = await params;
+  const page = await getLandingPage(slug);
+
   if (!page) {
     return {
       title: 'Page Not Found',
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
-  
+
   return {
     title: page.seoTitle || page.title,
     description: page.seoDescription || `Landing page: ${page.title}`,
@@ -40,14 +40,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: page.seoDescription || `Landing page: ${page.title}`,
       url: `${siteUrl}/landing/${params.slug}`,
       siteName: 'Page Builder',
-      images: page.seoImage ? [
-        {
-          url: page.seoImage.url,
-          width: page.seoImage.width,
-          height: page.seoImage.height,
-          alt: page.seoImage.title || page.title,
-        }
-      ] : [],
+      images: page.seoImage
+        ? [
+            {
+              url: page.seoImage.url,
+              width: page.seoImage.width,
+              height: page.seoImage.height,
+              alt: page.seoImage.title || page.title,
+            },
+          ]
+        : [],
       locale: 'en_US',
       type: 'website',
     },
@@ -63,20 +65,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-
-  const page = await getLandingPage(params.slug);
+export default async function Page({ params }: Props) {
+  const { slug } = await params;
+  const page = await getLandingPage(slug);
   if (!page) {
     notFound();
   }
 
-  // If your layout config is stored as layoutConfiguration (Contentful field), parse it if it's a string
   let layoutConfig = page.layoutConfig || page.layoutConfiguration;
   if (typeof layoutConfig === 'string') {
     try {
       layoutConfig = JSON.parse(layoutConfig);
     } catch {
-      layoutConfig = { components: [] };
+      layoutConfig = { components: [], lastUpdated: new Date().toISOString() };
     }
+  }
+  if (!layoutConfig || typeof layoutConfig !== 'object') {
+    layoutConfig = { components: [], lastUpdated: new Date().toISOString() };
+  } else if (!layoutConfig.lastUpdated) {
+    layoutConfig.lastUpdated = new Date().toISOString();
   }
 
   const renderComponent = (component: ComponentBlock) => {
@@ -129,11 +136,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      
       <GlobalNavigation />
-      
       <main>
-        {page.layoutConfig.components.map(renderComponent)}
+        {layoutConfig.components.map(renderComponent)}
       </main>
     </>
   );
