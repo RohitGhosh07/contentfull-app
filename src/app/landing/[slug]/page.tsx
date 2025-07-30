@@ -71,28 +71,81 @@ export default async function Page({ params }: any) {
   }
 
   let layoutConfig = page.layoutConfig || page.layoutConfiguration;
-  if (typeof layoutConfig === 'string') {
+  // If layoutConfig is an object with a components array, use as is
+  if (layoutConfig && typeof layoutConfig === 'object' && Array.isArray(layoutConfig.components)) {
+    // do nothing
+  } else if (typeof layoutConfig === 'string') {
     try {
       layoutConfig = JSON.parse(layoutConfig);
     } catch {
       layoutConfig = { components: [], lastUpdated: new Date().toISOString() };
     }
-  }
-  if (!layoutConfig || typeof layoutConfig !== 'object') {
+  } else {
     layoutConfig = { components: [], lastUpdated: new Date().toISOString() };
-  } else if (!layoutConfig.lastUpdated) {
+  }
+  if (!layoutConfig.lastUpdated) {
     layoutConfig.lastUpdated = new Date().toISOString();
   }
 
-  const renderComponent = (component: ComponentBlock) => {
-    if (!component.data) return null;
-    switch (component.type) {
+  // Map Contentful API shape to internal block shape expected by components
+  const normalizeBlock = (component: any): ComponentBlock => {
+    if (component.type === 'hero') {
+      return {
+        id: component.id,
+        type: 'hero',
+        data: {
+          heading: component.heading,
+          subtitle: component.subheading,
+          ctaText: component.cta?.label || '',
+          ctaUrl: component.cta?.url || '',
+          backgroundImage: {
+            sys: { id: component.id + '-bg' },
+            url: component.backgroundImage,
+            title: component.heading,
+          },
+        },
+      };
+    } else if (component.type === 'twoColumn') {
+      return {
+        id: component.id,
+        type: 'twoColumn',
+        data: {
+          heading: component.left?.heading || '',
+          subtitle: component.left?.subheading || '',
+          ctaText: component.left?.cta?.label || '',
+          ctaUrl: component.left?.cta?.url || '',
+          image: {
+            sys: { id: component.id + '-img' },
+            url: component.rightImage,
+            title: component.left?.heading || '',
+          },
+        },
+      };
+    } else if (component.type === 'imageGrid') {
+      return {
+        id: component.id,
+        type: 'imageGrid',
+        data: {
+          images: (component.images || []).map((url: string, idx: number) => ({
+            sys: { id: component.id + '-img-' + idx },
+            url,
+            title: `Image ${idx + 1}`,
+          })),
+        },
+      };
+    }
+    return component as ComponentBlock;
+  };
+
+  const renderComponent = (component: any) => {
+    const block = normalizeBlock(component);
+    switch (block.type) {
       case 'hero':
-        return <HeroBlock key={component.id} block={component} />;
+        return <HeroBlock key={block.id} block={block} />;
       case 'twoColumn':
-        return <TwoColumnBlock key={component.id} block={component} />;
+        return <TwoColumnBlock key={block.id} block={block} />;
       case 'imageGrid':
-        return <ImageGridBlock key={component.id} block={component} />;
+        return <ImageGridBlock key={block.id} block={block} />;
       default:
         return null;
     }

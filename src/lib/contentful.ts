@@ -62,11 +62,18 @@ export async function getLandingPage(slug: string): Promise<LandingPage | null> 
     const response = await client.request<any>(LANDING_PAGE_QUERY, { slug });
     // Debug log the response structure
     console.log('Contentful landing page response:', JSON.stringify(response, null, 2));
-    if (!response || !response.landingPageCollection || !response.landingPageCollection.items) {
+    if (!response?.landingPageCollection?.items) {
       console.error('landingPageCollection or items missing in response:', response);
       return null;
     }
-    return response.landingPageCollection.items[0] || null;
+    const items = response.landingPageCollection.items;
+    if (!Array.isArray(items) || items.length === 0) {
+      // No matching landing page found for the slug
+      return null;
+    }
+    // Find the item with the exact slug
+    const item = items.find((item: any) => item.slug === slug);
+    return item || null;
   } catch (error: any) {
     // Handle Contentful UNRESOLVABLE_LINK error gracefully
     const isUnresolvableLink = error?.response?.errors?.some((e: any) =>
@@ -74,7 +81,12 @@ export async function getLandingPage(slug: string): Promise<LandingPage | null> 
     );
     if (isUnresolvableLink && error.response?.landingPageCollection?.items) {
       console.warn('Contentful UNRESOLVABLE_LINK: returning partial data with seoImage as null');
-      return error.response.landingPageCollection.items[0] || null;
+      const items = error.response.landingPageCollection.items;
+      if (!Array.isArray(items) || items.length === 0) {
+        return null;
+      }
+      const item = items.find((item: any) => item.slug === slug);
+      return item || null;
     }
     console.error('Error fetching landing page:', error);
     return null;
