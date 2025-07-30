@@ -86,7 +86,7 @@ export default async function Page({ params }: any) {
   } else {
     layoutConfig = { components: [], lastUpdated: new Date().toISOString() };
   }
-  if (!layoutConfig.lastUpdated) {
+  if (layoutConfig && !layoutConfig.lastUpdated) {
     layoutConfig.lastUpdated = new Date().toISOString();
   }
   // Ensure layoutConfig is always defined and has the expected shape
